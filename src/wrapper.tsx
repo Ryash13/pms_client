@@ -1,8 +1,10 @@
-import Navbar from "./components/Navbar";
-import { Outlet } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
-import { useAppState } from "./context/AppState";
 import { useEffect } from "react";
+import { Outlet } from "react-router-dom";
+
+import { useAppState } from "./context/AppState";
+
+import Sidebar from "@/components/custom/SideNav/Sidebar";
+import Navbar from "@/components/custom/NavBar/Navbar";
 
 const Wrapper = () => {
   const { isDarkMode, isSideBarCollapsed } = useAppState();
