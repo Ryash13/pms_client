@@ -34,7 +34,7 @@ const Home = () => {
   return (
     <div className="min-h-screen min-w-full">
       {/* Hero Section */}
-      <section className="container mx-auto py-20 text-center bg-gray-400">
+      <section className="container mx-auto py-20 text-center">
         <h1 className="text-6xl sm:text-7xl lg:text-8xl font-extrabold gradient-title pb-6 flex flex-col">
           Streamline Your Workflow <br />
           <span className="flex mx-auto gap-3 sm:gap-4 items-center">
@@ -48,7 +48,7 @@ const Home = () => {
             />
           </span>
         </h1>
-        <p className="text-xl text-gray-300 mb-10 max-w-3xl mx-auto">
+        <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
           Empower your team with our intuitive project management solution.
         </p>
         <p className="text-xl mb-12 max-w-2xl mx-auto"></p>
@@ -108,7 +108,7 @@ const Home = () => {
             Join thousands of teams already using ZCRUM to streamline their
             projects and boost productivity.
           </p>
-          <Link to="/onboarding">
+          <Link to="/register">
             <Button size="lg" className="animate-bounce">
               Start For Free <ArrowRight className="ml-2 h-5 w-5" />
             </Button>

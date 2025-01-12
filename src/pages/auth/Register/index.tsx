@@ -24,9 +24,16 @@ const Register = () => {
 
   return (
     <div className="bg-gray-100 dark:bg-gray-800 min-h-screen flex items-center justify-center">
-      <div className="flex w-full max-w-4xl bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden">
+      <div className="flex w-full min-h-[98vh] max-w-4xl bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden">
+        <div className="w-1/2 flex items-center justify-center">
+          <img
+            src="./public/app1.png"
+            alt="Login"
+            className="object-cover w-full h-full"
+          />
+        </div>
         <div className="w-1/2 p-8 flex flex-col items-center justify-center">
-          <div className="flex flex-col items-start justify-start w-full">
+          <div className="flex flex-col items-end justify-start w-full">
             <h1 className="font-medium text-xl text-gray-900 dark:text-white">
               Signup to Align_IQ
             </h1>
@@ -124,13 +131,6 @@ const Register = () => {
               </p>
             </button>
           </div>
-        </div>
-        <div className="w-1/2 flex items-center justify-center">
-          <img
-            src="./public/app1.png"
-            alt="Login"
-            className="object-cover w-full h-full"
-          />
         </div>
       </div>
     </div>
