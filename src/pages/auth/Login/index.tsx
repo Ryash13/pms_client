@@ -1,13 +1,31 @@
 import { Link } from "react-router-dom";
 import Separator from "../../../components/custom/Separator";
-import { LoginUser } from "./login.interface";
-import { useState } from "react";
+import { LoginResponse, LoginUser } from "./login.interface";
+import { useEffect, useState } from "react";
+import useApi from "@/api/api";
+import Loader from "@/components/custom/Loader";
+import { toast } from "sonner"
+
 
 const Login = () => {
   const [loginUser, setLoginuser] = useState<LoginUser>({
     email: "",
     password: "",
   });
+
+  const loginUrl = "api/v1/auth/login";
+
+  const { response, loading, error, triggerApi } = useApi<LoginResponse>(loginUrl, 'POST', loginUser);
+
+  useEffect(() => {
+    if (error) {
+      toast(error);
+    }
+  }, [error]);
+
+  if(loading) {
+    return <Loader />
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -16,8 +34,8 @@ const Login = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(loginUser);
+    triggerApi();
+    console.log(response);
   };
 
   return (

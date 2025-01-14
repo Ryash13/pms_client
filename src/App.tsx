@@ -8,6 +8,8 @@ import Settings from "./pages/app/settings";
 import { useAppState } from "./context/AppState";
 import { useEffect } from "react";
 import Project from "./pages/app/Project";
+import { Toaster } from "@/components/ui/sonner"
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   const { isDarkMode } = useAppState();
@@ -21,14 +23,24 @@ function App() {
   }, [isDarkMode]);
   return (
     <>
+    <Toaster />
       <Routes>
+        {/* Un-Protected Routes */}
         <Route path="/" element={<Home />} />
-        <Route path="/app" element={<Wrapper />}>
-          <Route path="/app/project" element={<Project />} />
-          <Route path="/app/settings" element={<Settings />} />
-        </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* Proteected Routes */}
+        <Route path="/app" element={<ProtectedRoute element={<Wrapper />} />}>
+          <Route
+            path="/app/project"
+            element={<ProtectedRoute element={<Project />} />}
+          />
+          <Route
+            path="/app/settings"
+            element={<ProtectedRoute element={<Settings />} />}
+          />
+        </Route>
       </Routes>
     </>
   );

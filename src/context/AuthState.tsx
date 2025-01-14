@@ -9,10 +9,15 @@ import React, {
 
 // Define the shape of the user
 export interface User {
-  name: string;
-  email: string;
   publicId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
   profileImageUrl: string;
+  username: string;
+  ownerProjects: string[];
+  coOwnedProjects: string[];
+  projectsAsTeamMember: string[];
 }
 
 // Define the context
