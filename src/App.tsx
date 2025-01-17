@@ -8,7 +8,7 @@ import Settings from "./pages/app/settings";
 import { useAppState } from "./context/AppState";
 import { useEffect } from "react";
 import Project from "./pages/app/Project";
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/toaster";
 import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
@@ -23,7 +23,7 @@ function App() {
   }, [isDarkMode]);
   return (
     <>
-    <Toaster />
+      <Toaster />
       <Routes>
         {/* Un-Protected Routes */}
         <Route path="/" element={<Home />} />

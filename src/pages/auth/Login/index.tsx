@@ -4,27 +4,39 @@ import { LoginResponse, LoginUser } from "./login.interface";
 import { useEffect, useState } from "react";
 import useApi from "@/api/api";
 import Loader from "@/components/custom/Loader";
-import { toast } from "sonner"
-
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const [loginUser, setLoginuser] = useState<LoginUser>({
     email: "",
     password: "",
   });
-
+  const { toast } = useToast();
   const loginUrl = "api/v1/auth/login";
 
-  const { response, loading, error, triggerApi } = useApi<LoginResponse>(loginUrl, 'POST', loginUser);
+  const { response, loading, error, triggerApi } = useApi<LoginResponse>(
+    loginUrl,
+    "POST",
+    loginUser
+  );
 
   useEffect(() => {
     if (error) {
-      toast(error);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error,
+        draggable: true,
+      });
     }
   }, [error]);
 
-  if(loading) {
-    return <Loader />
+  if (loading) {
+    return (
+      <div className="flex min-h-screen min-w-full items-center justify-center">
+        <Loader />
+      </div>
+    );
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

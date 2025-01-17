@@ -5,8 +5,6 @@ export interface RegisterUser {
   password: string;
 }
 
-export interface Organization {
-  name: string;
-  description: string;
-  slug: string;
+export interface RegisterUserResponse {
+  message: string;
 }

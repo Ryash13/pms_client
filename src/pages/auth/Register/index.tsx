@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RegisterUser } from "./register.interface";
 import { Link } from "react-router-dom";
 import Separator from "../../../components/custom/Separator";
+import useApi from "@/api/api";
+import { LoginResponse } from "../Login/login.interface";
+import { useToast } from "@/hooks/use-toast";
+import Loader from "@/components/custom/Loader";
 
 const Register = () => {
   const [registerUser, setRegisterUser] = useState<RegisterUser>({
@@ -11,6 +15,34 @@ const Register = () => {
     password: "",
   });
 
+  const { toast } = useToast();
+  const registerUrl = "api/v1/auth/register";
+
+  const { response, loading, error, triggerApi } = useApi<LoginResponse>(
+    registerUrl,
+    "POST",
+    registerUser
+  );
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen min-w-full items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error,
+        draggable: true,
+      });
+    }
+  }, [error]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setRegisterUser((prev) => ({ ...prev, [name]: value }));
@@ -18,8 +50,8 @@ const Register = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(registerUser);
+    triggerApi();
+    console.log(response);
   };
 
   return (
