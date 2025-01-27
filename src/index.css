@@ -12,8 +12,8 @@ html,
 body,
 #root,
 .app {
-  height: 100%;
-  width: 100%;
+  min-height: 100%;
+  min-width: 100%;
   @apply text-sm;
   @apply bg-gray-200;
   @apply text-gray-900;
@@ -83,4 +83,12 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.bg-dark {
+  background-image: url('/bg-dark.svg')
+}
+
+.bg-light {
+  background-image: url('/bg-light.svg')
 }

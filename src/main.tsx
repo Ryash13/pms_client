@@ -5,15 +5,16 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { AuthStateProvider } from "./context/AuthState.tsx";
 import { AppStateProvider } from "./context/AppState.tsx";
+import { ProjectProvider } from "./context/useProject.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <AuthStateProvider>
-      <AppStateProvider>
+  <AuthStateProvider>
+    <AppStateProvider>
+      <ProjectProvider>
         <BrowserRouter>
           <App />
         </BrowserRouter>
-      </AppStateProvider>
-    </AuthStateProvider>
-  </StrictMode>
+      </ProjectProvider>
+    </AppStateProvider>
+  </AuthStateProvider>
 );

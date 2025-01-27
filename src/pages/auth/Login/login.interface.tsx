@@ -1,20 +1,12 @@
+import { User } from "@/context/AuthState";
+
 export interface LoginUser {
   email: string;
   password: string;
 }
 
-export interface LoggedInUserInfo {
-  publicId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  profileImageUrl: string;
-  username: string;
-  ownedProjects?: string[];
-  coOwnedProjects?: string[];
-  projectsAsTeamMember?: string[];
-}
+type AuthResponse = 'token' | 'user';
 
-export interface LoginResponse {
-  [key: string]: string | LoggedInUserInfo;
-}
+export type LoginResponse = {
+  [key in AuthResponse]: string | User;
+};

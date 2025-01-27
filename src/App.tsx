@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import Project from "./pages/app/Project";
 import { Toaster } from "@/components/ui/toaster";
 import ProtectedRoute from "./ProtectedRoute";
+import UnProtectedRoute from "./UnProtectedRoute";
 
 function App() {
   const { isDarkMode } = useAppState();
@@ -26,12 +27,12 @@ function App() {
       <Toaster />
       <Routes>
         {/* Un-Protected Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<UnProtectedRoute element={<Home />} />} />
+        <Route path="/login" element={<UnProtectedRoute element={<Login />} />} />
+        <Route path="/register" element={<UnProtectedRoute element={<Register />} />} />
 
         {/* Proteected Routes */}
-        <Route path="/app" element={<ProtectedRoute element={<Wrapper />} />}>
+        <Route path="/app/" element={<ProtectedRoute element={<Wrapper />} />}>
           <Route
             path="/app/project"
             element={<ProtectedRoute element={<Project />} />}

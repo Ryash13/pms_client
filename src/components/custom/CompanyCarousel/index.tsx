@@ -3,51 +3,54 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { useAppState } from "@/context/AppState";
 import Autoplay from "embla-carousel-autoplay";
 
 const CompanyCarousel = () => {
   const companies = [
     {
       name: "amazon",
-      path: "../../../public/amazon.svg",
+      path: "/amazon.svg",
       id: 1,
     },
     {
       name: "atlassian",
-      path: "../../../public/atlassian.svg",
+      path: "/atlassian.svg",
       id: 2,
     },
     {
       name: "google",
-      path: "../../../public/google.webp",
+      path: "/google.webp",
       id: 3,
     },
     {
       name: "ibm",
-      path: "../../../public/ibm.svg",
+      path: "/ibm.svg",
       id: 4,
     },
     {
       name: "meta",
-      path: "../../../public/meta.svg",
+      path: "/meta.svg",
       id: 5,
     },
     {
       name: "microsoft",
-      path: "../../../public/microsoft.webp",
+      path: "/microsoft.webp",
       id: 6,
     },
     {
       name: "netflix",
-      path: "../../../public/netflix.png",
+      path: "/netflix.png",
       id: 7,
     },
     {
       name: "uber",
-      path: "../../../public/uber.svg",
+      path: "/uber.svg",
       id: 8,
     },
   ];
+
+  const {isDarkMode} = useAppState();
 
   return (
     <Carousel
@@ -56,7 +59,7 @@ const CompanyCarousel = () => {
           delay: 1500,
         }),
       ]}
-      className="w-full py-10"
+      className={`w-full ${isDarkMode ? 'bg-black' : ''} py-10`}
     >
       <CarouselContent className="flex gap-5 sm:gap-20 items-center">
         {companies.map(({ name, id, path }) => (

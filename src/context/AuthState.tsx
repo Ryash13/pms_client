@@ -5,9 +5,10 @@ import React, {
   ReactNode,
   Dispatch,
   SetStateAction,
+  useEffect,
+  useMemo,
 } from "react";
 
-// Define the shape of the user
 export interface User {
   publicId: string;
   firstName: string;
@@ -20,13 +21,11 @@ export interface User {
   projectsAsTeamMember: string[];
 }
 
-// Define the context
 const AuthStateContext = createContext<User | null>(null);
 const AuthDispatchContext = createContext<
   Dispatch<SetStateAction<User | null>> | undefined
 >(undefined);
 
-// Provider component
 interface AuthStateProviderProps {
   children: ReactNode;
 }
@@ -34,10 +33,25 @@ interface AuthStateProviderProps {
 export const AuthStateProvider: React.FC<AuthStateProviderProps> = ({
   children,
 }) => {
-  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+  const storedUser = localStorage.getItem('auth_user');
+  const initialState = storedUser ? JSON.parse(storedUser) : null;
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(initialState);
+
+  useEffect(() => {
+    // Sync the loggedInUser with localStorage whenever it changes
+    if (loggedInUser) {
+      console.log("user found")
+      localStorage.setItem("auth_user", JSON.stringify(loggedInUser));
+    } else {
+      console.log("user removed")
+      localStorage.removeItem("auth_user");
+    }
+  }, [loggedInUser]);
+
+  const value = useMemo(() => loggedInUser, [loggedInUser]);
 
   return (
-    <AuthStateContext.Provider value={loggedInUser}>
+    <AuthStateContext.Provider value={value}>
       <AuthDispatchContext.Provider value={setLoggedInUser}>
         {children}
       </AuthDispatchContext.Provider>

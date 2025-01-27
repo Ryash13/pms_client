@@ -12,29 +12,18 @@ const Sidebar = () => {
   // const [showPriority, setShowPriority] = useState<boolean>(true);
 
   const { isSideBarCollapsed } = useAppState();
-  const dispatch = useAppDispatch();
 
   const sideBarClassNames = `fixed flex flex-col h-[100%] justify-between shadow-xl
-     h-full z-40 dark:bg-black overflow-y-auto bg-white
+     h-full z-40 dark:bg-black overflow-y-auto bg-white smooth-scroll
     ${isSideBarCollapsed ? "w-0 hidden" : "w-64"}
   `;
   return (
     <div className={sideBarClassNames}>
       <div className="flex h-[100%] w-full flex-col justify-start">
-        <div className="z-20 flex min-h-[56px] items-center justify-between bg-white dark:bg-dark-bg px-6">
+        <div className="z-20 flex min-h-[56px] items-center justify-between bg-white dark:bg-black px-6">
           <div className="text-xl font-bold text-gray-800 dark:text-white items-center">
             ALIGN_IQ
           </div>
-          {isSideBarCollapsed ? null : (
-            <button
-              className="py-3"
-              onClick={() => {
-                dispatch(toggleSidebarCollapse());
-              }}
-            >
-              <X className="h-6 w-6 text-gray-800 hover:text-gray-500 dark:text-white" />
-            </button>
-          )}
         </div>
 
         {/* Team Info= */}
