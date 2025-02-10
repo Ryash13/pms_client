@@ -50,7 +50,7 @@ const CompanyCarousel = () => {
     },
   ];
 
-  const {isDarkMode} = useAppState();
+  const { isDarkMode } = useAppState();
 
   return (
     <Carousel
@@ -59,7 +59,7 @@ const CompanyCarousel = () => {
           delay: 1500,
         }),
       ]}
-      className={`w-full ${isDarkMode ? 'bg-black' : ''} py-10`}
+      className={`w-full ${isDarkMode ? "bg-dark" : "bg-light"} py-10`}
     >
       <CarouselContent className="flex gap-5 sm:gap-20 items-center">
         {companies.map(({ name, id, path }) => (

@@ -1,64 +1,86 @@
-import { useEffect, useState } from "react";
-import Separator from "@/components/custom/Separator";
-import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { toast } from "sonner";
+import { LoaderCircle } from "lucide-react";
+import { ApiResponse } from "@/types";
 import { useAppState } from "@/context/AppState";
-import { Link } from "react-router-dom";
-import useApi from "@/api/api";
-import { LoaderIcon } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+
+import AuthSeparator from "@/components/custom/Separator";
+import AccountAlreadyRegistered from "./components/account-already-exists";
+import axios from "@/api/axiosConfig";
+import { setItem } from "@/service/auth.service";
 
 const Register = () => {
-  const [userEmail, setUserEmail] = useState<string>("");
-
-  const { toast } = useToast();
-  const { isDarkMode } = useAppState();
-  const { data, error, loading, makeApiCall } = useApi<boolean, null>();
-
-  useEffect(() => {
-    if (error) {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: error,
-        draggable: true,
-      });
-    }
-  }, [error]);
-
   const handleOAuthClicks = () => {
-    toast({
-      title: "Feature not available",
-      description: "Development In Progress, wait for another release.",
-      draggable: true,
+    toast.info("Alert", {
+      description: "OAuth is not implemented yet",
+      action: {
+        label: "Close",
+        onClick: () => {
+          toast.dismiss();
+        },
+      },
     });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setUserEmail(value);
+  const [isAccountAlreadyExists, setIsAccountAlreadyExists] =
+    useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const { isDarkMode } = useAppState();
+
+  const navigate = useNavigate();
+
+  const closeModel = () => {
+    setIsAccountAlreadyExists(false);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSignUpUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    const checkEmailUrl = '/api/v1/auth/isEmailRegistered';
-    if(!userEmail) {
-      toast({
-        title: 'Error',
-        description: 'Enter a valid Email Id',
-        variant: 'destructive'
-      })
+    if (!email) {
+      toast.warning("Enter a valid Email ID", {
+        action: {
+          label: "Close",
+          onClick: () => {
+            toast.dismiss();
+          },
+        },
+      });
       return;
     }
-    await makeApiCall(checkEmailUrl, 'GET' , null, {'email' : userEmail});
-    console.log(data);
-    if(data) {
-      toast({
-        title: 'Error',
-        description: 'Email ID is already registered, Enter a new one',
-        variant: 'destructive'
-      })
-      return;
+    setLoading(true);
+    const url = import.meta.env.VITE_IS_EMAIL_REGISTERED_URL + email;
+    try {
+      const response = await axios.get<ApiResponse<any>>(url);
+      const data = response.data.data;
+      if (!data) {
+        setIsAccountAlreadyExists(true);
+        setEmail("");
+        return;
+      }
+      setItem("$user_id", email);
+      console.log("Navigate to Onboarding screen");
+      navigate("/onboarding");
+    } catch (err) {
+      console.log(
+        "Error occured while validating is email is already registered :: ",
+        err
+      );
+      const axiosError = err as AxiosError;
+      if (axiosError.response?.data as string) {
+        toast.error(axiosError.response?.data as string, {
+          action: {
+            label: "Close",
+            onClick: () => {
+              toast.dismiss();
+            },
+          },
+        });
+      }
+    } finally {
+      setLoading(false);
     }
-    localStorage.setItem("register_email", userEmail);
   };
 
   return (
@@ -67,9 +89,13 @@ const Register = () => {
         isDarkMode ? "bg-dark" : "bg-light"
       }`}
     >
+      <AccountAlreadyRegistered
+        isOpen={isAccountAlreadyExists}
+        onClose={closeModel}
+      />
       <div className="text-center">
         <h4 className="text-2xl font-bold tracking-wider  text-gray-800 dark:text-gray-200">
-          Sign Up
+          Welcome to Align IQ
         </h4>
       </div>
       <div className="w-1/3 flex flex-col gap-2">
@@ -77,28 +103,34 @@ const Register = () => {
           type="text"
           id="email"
           name="email"
-          value={userEmail}
-          onChange={handleChange}
-          placeholder="name@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="john.doe@example.com"
           className="w-full px-3 py-4 mt-1 border rounded-lg shadow-sm focus:outline-none focus:ring-gray-900 focus:border-gray-500 dark:bg-gray-700 dark:text-white"
         />
         <button
           type="button"
-          onClick={handleSubmit}
+          onClick={handleSignUpUser}
+          disabled={loading}
           className="mt-2 bg-dark-bg dark:text-gray-300 text-gray-300 w-full py-3 rounded-lg hover:bg-gray-800 flex items-center justify-center gap-3"
         >
-          Continue
-          {loading && <LoaderIcon className="animate-spin" />}
+          {loading ? (
+            <>
+              <LoaderCircle className="size-4 mr-2 animate-spin" /> Submitting
+            </>
+          ) : (
+            "Sign Up"
+          )}
         </button>
       </div>
       <div className="w-1/3">
-        <Separator />
+        <AuthSeparator />
       </div>
       <div className="w-1/3">
         <button
           type="button"
           onClick={handleOAuthClicks}
-          className="z-10 shadow-sm border-[0.1em] border-gray-300 rounded-lg py-3 px-8 flex flex-row gap-3 items-center justify-center mb-4 w-full"
+          className="z-10 shadow-sm border-[0.1em] dark:hover:bg-gray-800 border-gray-300 rounded-lg py-3 px-8 flex flex-row gap-3 items-center justify-center mb-4 w-full"
         >
           <img
             src="/google.png"
@@ -112,7 +144,7 @@ const Register = () => {
         <button
           type="button"
           onClick={handleOAuthClicks}
-          className="z-10 shadow-sm border-[0.1em] border-gray-300 rounded-lg py-3 px-8 flex flex-row gap-3 items-center justify-center mb-5 w-full"
+          className="z-10 shadow-sm border-[0.1em] dark:hover:bg-gray-800 border-gray-300 rounded-lg py-3 px-8 flex flex-row gap-3 items-center justify-center mb-5 w-full"
         >
           <img
             src="/github.png"
@@ -125,11 +157,12 @@ const Register = () => {
         </button>
       </div>
       <div className="w-full text-center -mb-2">
-        <p className="text-sm dark:text-gray-300">Already have an account? <span className="cursor-pointer underline font-semibold">
-            <Link to='/login' >
-              Sign In
-            </Link>
-          </span></p>
+        <p className="text-sm dark:text-gray-300">
+          Already have an account?{" "}
+          <span className="cursor-pointer underline font-semibold">
+            <Link to="/login">Sign In</Link>
+          </span>
+        </p>
       </div>
       <div className="w-1/6 text-center mt-4">
         <p className="text-gray-800 dark:text-gray-300 font-normal text-sm tracking-wide">

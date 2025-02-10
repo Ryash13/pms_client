@@ -3,8 +3,8 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useAuthState } from "./AuthState";
 import axios from "@/api/axiosConfig";
 import { AxiosError, AxiosResponse } from "axios";
-import { useToast } from "@/hooks/use-toast";
 import { getItem, setItem } from "@/service/auth.service";
+import { toast } from "sonner";
 
 interface ProjectContextType {
   projects: Project[];
@@ -19,7 +19,7 @@ export type GetProjectResponse = {
   [key in ProjectResponse]: string | Project[];
 };
 
-type ProjectResponse = 'data' | 'defaultProject'
+type ProjectResponse = "data" | "defaultProject";
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
@@ -31,27 +31,30 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const loggedInUser = useAuthState();
-  const toast = useToast();
 
   // Fetch projects from the API
   const fetchProjects = async () => {
     try {
       setLoading(true);
       if (!loggedInUser) return;
-
-      const response = await axios.get<AxiosResponse<GetProjectResponse>>("/api/v1/projects");
+      const url = import.meta.env.VITE_FETCH_PROJECT;
+      const response = await axios.get<AxiosResponse<GetProjectResponse>>(url);
       const data = response.data?.data?.data as Project[];
       setProjects(data);
-      const defaultProjectId = response.data?.data?.defaultProject as string;
+      const defaultProjectId = response.data?.data?.defaultProject;
 
       if (data.length > 0) {
         // Check if there is a selected project in localStorage
         const savedProjectId = getItem("current_project");
-        let defaultProject = data.find((project) => project.publicId === defaultProjectId);
+        let defaultProject = data.find(
+          (project) => project?.id === Number(defaultProjectId)
+        );
 
         if (savedProjectId && !defaultProject) {
           // If there is a saved project ID and no default project, set the saved project
-          defaultProject = data.find((project) => project.publicId === savedProjectId);
+          defaultProject = data.find(
+            (project) => project?.id === Number(savedProjectId)
+          );
         }
 
         if (defaultProject) {
@@ -65,15 +68,14 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch (err) {
       console.error("Failed to fetch projects:", err);
       const axiosError = err as AxiosError;
-      var error = (axiosError.response?.data as { error: string })?.error || "An unknown error occurred";
-      if (axiosError.message === "Network Error") {
-        error = "INTERNAL SERVER ERROR, TRY AGAIN LATER";
+      var error =
+        (axiosError.response?.data as { error: string })?.error ||
+        "An unknown error occurred";
+      if (axiosError.message === "Connection refused") {
+        error = "Connection refused with server, try again later.";
       }
-      toast.toast({
-        variant: "destructive",
-        title: "Error",
+      toast.error("Error", {
         description: error,
-        draggable: true,
       });
     } finally {
       setLoading(false);
@@ -83,7 +85,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
   // Set the selected project and persist it to localStorage
   const handleSetSelectedProject = (project: Project) => {
     setSelectedProject(project);
-    setItem("current_project", project.publicId);
+    setItem("current_project", project?.id.toString());
   };
 
   // Add a new project and set it as the selected project
@@ -96,7 +98,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const savedProjectId = localStorage.getItem("current_project");
     if (savedProjectId) {
-      const savedProject = projects.find((project) => project.publicId === savedProjectId);
+      const savedProject = projects.find(
+        (project) => project.id === Number(savedProjectId)
+      );
       if (savedProject) {
         setSelectedProject(savedProject);
       }

@@ -1,3 +1,4 @@
+import { User } from "@/types";
 import React, {
   createContext,
   useContext,
@@ -8,18 +9,6 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
-
-export interface User {
-  publicId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  profileImageUrl: string;
-  username: string;
-  ownerProjects: string[];
-  coOwnedProjects: string[];
-  projectsAsTeamMember: string[];
-}
 
 const AuthStateContext = createContext<User | null>(null);
 const AuthDispatchContext = createContext<
@@ -33,18 +22,21 @@ interface AuthStateProviderProps {
 export const AuthStateProvider: React.FC<AuthStateProviderProps> = ({
   children,
 }) => {
-  const storedUser = localStorage.getItem('auth_user');
+  const storedUser = localStorage.getItem("auth_user");
   const initialState = storedUser ? JSON.parse(storedUser) : null;
   const [loggedInUser, setLoggedInUser] = useState<User | null>(initialState);
 
   useEffect(() => {
     // Sync the loggedInUser with localStorage whenever it changes
     if (loggedInUser) {
-      console.log("user found")
+      console.log("user found");
       localStorage.setItem("auth_user", JSON.stringify(loggedInUser));
     } else {
-      console.log("user removed")
+      console.log("user removed");
       localStorage.removeItem("auth_user");
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("current_project");
+      localStorage.removeItem("$user_id");
     }
   }, [loggedInUser]);
 

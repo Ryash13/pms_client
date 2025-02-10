@@ -8,6 +8,93 @@
   box-sizing: border-box;
 }
 
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  display: none;
+}
+
+/* For Firefox */
+body {
+  scrollbar-width: none;
+}
+
+/* Allow scrollbars in elements with .scrollbar-visible */
+.scrollbar-visible {
+  overflow: auto !important;
+  /* Enable scrolling */
+  scrollbar-width: thin;
+  /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent;
+  /* Custom scrollbar color */
+}
+
+/* Webkit (Chrome, Safari, Edge) */
+.scrollbar-visible::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.5);
+  /* Thumb color */
+  border-radius: 4px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  /* Track color */
+}
+
+/* Class to show scrollbar where needed */
+/* .scrollbar-visible {
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+}
+
+.scrollbar-visible::-webkit-scrollbar {
+  display: block;
+  width: 24px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+} */
+
+/* Ensure the scrollbar is visible */
+.scrollbar-visible {
+  overflow: auto !important;
+  /* Ensure scrolling is enabled */
+  scrollbar-width: thin;
+  /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0.1);
+  /* Firefox custom colors */
+}
+
+/* Webkit (Chrome, Edge, Safari) */
+.scrollbar-visible::-webkit-scrollbar {
+  width: 8px;
+  /* Visible scrollbar width */
+  height: 8px;
+  /* Visible scrollbar height */
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.5);
+  /* Visible scrollbar thumb */
+  border-radius: 4px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  /* Track background */
+}
+
 html,
 body,
 #root,
@@ -17,7 +104,8 @@ body,
   @apply text-sm;
   @apply bg-gray-200;
   @apply text-gray-900;
-  @apply dark:bg-black;
+  @apply dark:bg-[#1A1A1A];
+  @apply font-custom-regular;
 }
 
 @layer base {
@@ -47,6 +135,14 @@ body,
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
     --background: 240 10% 3.9%;
@@ -73,6 +169,14 @@ body,
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -83,6 +187,48 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@font-face {
+  font-family: "MyCustomFont-Regular";
+  src: url("/fonts/Inter-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MyCustomFont-Black";
+  src: url("/fonts/Inter-Black.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MyCustomFont-Medium";
+  src: url("/fonts/Inter-Medium.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MyCustomFont-Bold";
+  src: url("/fonts/Inter-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MyCustomFont-SemiBold";
+  src: url("/fonts/Inter-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "MyCustomFont-ExtraBold";
+  src: url("/fonts/Inter-ExtraBold.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
 }
 
 .bg-dark {

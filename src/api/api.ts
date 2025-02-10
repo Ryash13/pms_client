@@ -1,22 +1,23 @@
 import { useCallback, useState } from "react";
 import { AxiosError, AxiosRequestConfig } from "axios";
 import api from "./axiosConfig";
-
-export interface ApiResponse<T> {
-  data: T;
-}
+import { ApiResponse } from "@/types";
 
 type Method = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
-export const useApi = <T, R>(
-  config?: AxiosRequestConfig
-) => {
+export const useApi = <T, R>(config?: AxiosRequestConfig) => {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const makeApiCall = useCallback(
-    async (url: string, method: Method, body?: R, queryParams?: Record<string, any>, urlParams?: Record<string, string>) => {
+    async (
+      url: string,
+      method: Method,
+      body?: R,
+      queryParams?: Record<string, any>,
+      urlParams?: Record<string, string>
+    ) => {
       setLoading(true);
       setError(null);
       try {
@@ -39,7 +40,10 @@ export const useApi = <T, R>(
         setData(response.data.data);
       } catch (err) {
         const axiosError = err as AxiosError;
-        setError((axiosError.response?.data as { error: string })?.error || "An unknown error occurred");
+        setError(
+          (axiosError.response?.data as { error: string })?.error ||
+            "An unknown error occurred"
+        );
       } finally {
         setLoading(false);
       }
